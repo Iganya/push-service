@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+aio-pika
+redis
+firebase-admin
+pybreaker
+structlog
+httpx
+jinja2
+pydantic
+pydantic-settings

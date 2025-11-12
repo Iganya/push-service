@@ -1,0 +1,15 @@
+keepfile.py
+
+# Ignore all files
+mainstore.py
+caude.py
+app/__pycache__/
+app/core/__pycache__/
+
+
+app/fcm_push.py
+
+config.txt
+
+venv/
+

@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7
+    container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  fastapi:
+    build: ./app
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    container_name: fastapi
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+      - ./firebase-service-account.json:/app/firebase-service-account.json:ro
+    environment:
+      - RABBITMQ_HOST=amqp://guest:guest@rabbitmq:5672/
+      - REDIS_HOST=redis://redis:6379/0
+      - FIREBASE_CREDENTIALS=./firebase-service-account.json
+      - USER_SERVICE_URL=http://user-service:8001
+      - TEMPLATE_SERVICE_URL=http://template-service:8002
+      - PUSH_QUEUE_NAME=push.queue
+    ports:
+      - "8000:8000"
+    # depends_on:
+    #   - rabbitmq
+    #   - redis
+    networks:
+      - app-network
+    restart: on-failure
+
+networks:
+  app-network:
+    driver: bridge
