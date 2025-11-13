@@ -35,7 +35,7 @@ services:
       - app-network
 
   fastapi:
-    build: ./app
+    build: ./
     depends_on:
       rabbitmq:
         condition: service_healthy
