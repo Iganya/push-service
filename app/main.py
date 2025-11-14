@@ -34,10 +34,17 @@ jinja_env = Environment(autoescape=True)
 cred = credentials.Certificate(fcm_config)
 initialize_app(cred)
 
+#
 
 @app.on_event("startup")
 async def startup_event():
-    app.state.redis = Redis.from_url(settings.REDIS_URL, decode_responses=True)
+    app.state.redis = Redis(
+        host=settings.REDIS_HOST,
+        port=settings.REDIS_PORT,
+        password=settings.REDIS_PASSWORD,
+        ssl=True
+        )
+    # app.state.redis = Redis.from_url(settings.REDIS_URL, decode_responses=True)
     print("Redis connected", app.state.redis)
     asyncio.create_task(consume_push_queue())
 

@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     REDIS_URL: str = os.getenv("REDIS_URL")
     # FCM_CREDENTIALS_PATH: str = os.getenv("FCM_CREDENTIALS_JSON_PATH")
     PUSH_QUEUE_NAME: str = os.getenv("PUSH_QUEUE_NAME", "push.queue")
+    REDIS_HOST: str = os.getenv("REDIS_HOST")
+    REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
 
 
 settings = Settings()
