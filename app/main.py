@@ -234,21 +234,24 @@ async def process_push_message(message: aio_pika.IncomingMessage):
 
 
 async def consume_push_queue():
-    connection = await aio_pika.connect_robust(settings.RABBITMQ_URL)
-    app.state.httpx_client = httpx.AsyncClient()
+    try:
+        connection = await aio_pika.connect_robust(settings.RABBITMQ_URL)
+        app.state.httpx_client = httpx.AsyncClient()
 
-    app.state.channel = await connection.channel()
-    await app.state.channel.set_qos(prefetch_count=10)
+        app.state.channel = await connection.channel()
+        await app.state.channel.set_qos(prefetch_count=10)
 
-    exchange = await app.state.channel.declare_exchange("notifications.direct",  durable=True)
-    # queue = await app.state.channel.declare_queue(settings.PUSH_QUEUE_NAME, durable=True)
-    # await queue.bind(exchange, routing_key=settings.PUSH_QUEUE_NAME)
-    queue = await app.state.channel.get_queue(settings.PUSH_QUEUE_NAME)
-    await queue.bind(exchange, routing_key='notification.push')
-    
-    await queue.consume(process_push_message)
-    logger.info("Push Service consuming messages", queue=settings.PUSH_QUEUE_NAME)
-    await asyncio.Future()  # Keep consumer running indefinitely
+        exchange = await app.state.channel.declare_exchange("notifications.direct",  durable=True)
+        # queue = await app.state.channel.declare_queue(settings.PUSH_QUEUE_NAME, durable=True)
+        # await queue.bind(exchange, routing_key=settings.PUSH_QUEUE_NAME)
+        queue = await app.state.channel.get_queue(settings.PUSH_QUEUE_NAME)
+        await queue.bind(exchange, routing_key='notification.push')
+        
+        await queue.consume(process_push_message)
+        logger.info("Push Service consuming messages", queue=settings.PUSH_QUEUE_NAME)
+        await asyncio.Future()  # Keep consumer running indefinitely
+    except Exception as e:
+        logger.error("Consumer crashed", exc_info=e)
 
 
 
