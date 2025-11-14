@@ -1,8 +1,11 @@
 keepfile.py
-
-# Ignore all files
 mainstore.py
 caude.py
+view.py
+mainchec.py
+
+
+
 app/__pycache__/
 app/core/__pycache__/
 

@@ -45,19 +45,18 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - .:/app
-      - ./firebase-service-account.json:/app/firebase-service-account.json:ro
+      - ./hngpushservice-firebase-adminsdk-fbsvc-33c9715e8f.json:/app/hngpushservice-firebase-adminsdk-fbsvc-33c9715e8f.json
     environment:
-      - RABBITMQ_HOST=amqp://guest:guest@rabbitmq:5672/
-      - REDIS_HOST=redis://redis:6379/0
-      - FIREBASE_CREDENTIALS=./firebase-service-account.json
-      - USER_SERVICE_URL=http://user-service:8001
-      - TEMPLATE_SERVICE_URL=http://template-service:8002
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - REDIS_URL=redis://redis:6379/0
+      - FIREBASE_CREDENTIALS=./hngpushservice-firebase-adminsdk-fbsvc-33c9715e8f.json
+      - FCM_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC/KbcP1GIVdK6w\n7g0XVS7x4FO5frNy7XKk14KqavR2eLQ9WEaDEwwO+FpUFDUbAP7k2VHD7DAByf9f\ncXREaGdAqybVUb1oCrpsZQ+OMewme1xaCWkT8bkTVwaeLjJF4C7Egqx//q1Lf2YX\n7ZT8N7ad23obkv0UNQLV5tLqvypWLTtq94NWTq2X/VYGI0BfkorZ6BnMFFzKG3W7\ni0AYVOJW0Y58oxB8LzeaHO0cpSYqn6WotmNpUPlLJN4Bl8nMHgs2qpzdVbN91+zx\nh7Q3LpbQURRgtkkG23nWM17bTwqCwcekSqnsB+iOV15/BPZdy8Nz1lGjdAN3Hj7L\nn8AL7IcRAgMBAAECggEAC3/wbcjaf6ztx2ICspkiwlU65ClNlUfYgjceuq7Fdw0K\n1rflQgRW0N263Vz71tyH+O9j3lPqjWj/7lduZaEcOQUyyFlq+gPPNC8eMPEq4iPA\nqf/v7M25UwMEuGZSCucSGSs9QlPpS+Xll+HoeQXG/BcUcO02QU1xFroUjR+j5dwm\n+hnvrWuRmjq5WhCqsarcKYg3SProqug6iIO+0qNZzc+ZUlXCCOhJdsLdN3PuQM/9\nX90lcKT9DB528F3Mjy9ipl+45n6veWPOtg66MRKrxoEQAxHPRPFdASA+vuj9Obb6\nbgTreXuLrkl96X4daCjTRx5wX5jmy/hmU23IGKo9GQKBgQD1BBxVjmw2uGcMDzw3\n45sulUqoJ/Kiy/nstezkOEeI/k+j10t11vPJPHOt+iRs5CyNnWdUbSbH175OEJBA\nUX4zW0SoZmUGjcEhfS6yo2vUE6ZUQbSlyB62jyJe1Y16AsUkGlGAZldyb6mCr2lY\ncRCtC/yTwNeeMpiumYQDIRhcTQKBgQDHu5FEOYCLFK5wWpL1wv/5pCPV4rcIBauF\nyr0EnLzFONvXPC1n46UNvedTDHsX9vze2OtNEzA4MmbJKKl0DVAErT0osH9/pFNv\nnWwMRY6xpesZM4ElGHNTl8Mviy3VBiBHI4zzeLOI/m2xBVaqBFn70a2OF4OIb/td\nn60v6vgn1QKBgQD07w4QLVdagI9rC9PsHxljwRSn839oZTbL/rX5E5XXijs9E525\nCJAerNMLqdM+E//B9gd068Tn5HG3AnHiClV5q5SAMBRwL8dQ3h6PsDS8BoSxGBop\n3FtvrrjyStOqlBhV1gWBsU1b9epj3U0Xf7fm9eOiJRana/ccHBVPN4dtxQKBgQCN\nRFPljkollLYgT1+cJZTI69hQwi60pNYBJjj0lytIzwNmw3BWB4PJKWUAr1YsyAto\nTsJ2XDkBtlxOsMzRgUz0Udds/RDgpchBrHUsZNIdQf37cBtKsnV3TWLHMMh04AVa\na4GY/uj03weUafM3Aybl3hLD6kuk55dBS9vBhY6JFQKBgQDYcsvkQTVeqCz19G8o\n7HE5/vdQkRnF4EiZd4GqVOJSJd/YQMUDzSb5i2f7YhjHO7N0U++NSuSxhGJeQaAv\njB6LfdF+7fNEyOJgmfMG+52KAN/VgEXL5c/jF/Wi+jMpzSCiShaPNewR7epiKs+6\n1mFpZ5UTUEh5xSH4OwbL4B32Og==\n-----END PRIVATE KEY-----\n
+      - FCM_PRIVATE_KEY_ID=33c9715e8fd9780780cbabbfae35424663417356
+      - API_GATEWAY_API_KEY=apk_a7f3e2c1-9d4b-4f6a-8e1d-5c2b7f9a1e3d
+      - API_GATEWAY_BASE_URL=https://distributed-notification-system-production-3a3b.up.railway.app
       - PUSH_QUEUE_NAME=push.queue
     ports:
       - "8000:8000"
-    # depends_on:
-    #   - rabbitmq
-    #   - redis
     networks:
       - app-network
     restart: on-failure
